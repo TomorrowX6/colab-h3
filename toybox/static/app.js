@@ -917,14 +917,18 @@ async function checkComfy() {
 // ------------------------------------------------------------ wiring
 function bind() {
   // Left rail & collapsible library drawer
-  $("#btnToggleLib")?.addEventListener("click", () => toggleLibraryDrawer());
-  $("#btnTopLib")?.addEventListener("click", () => toggleLibraryDrawer());
+  $("#btnToggleLib")?.addEventListener("click", e => { e.stopPropagation(); toggleLibraryDrawer(); });
+  $("#btnTopLib")?.addEventListener("click", e => { e.stopPropagation(); toggleLibraryDrawer(); });
   $("#btnCloseLib")?.addEventListener("click", () => toggleLibraryDrawer(false));
   $("#navCreate")?.addEventListener("click", () => {
+    if (window.innerWidth <= 768) toggleLibraryDrawer(false);
+    closePopovers();
     window.scrollTo({ top: 0, behavior: "smooth" });
     $("#prompt")?.focus();
   });
   $("#btnScrollResults")?.addEventListener("click", () => {
+    if (window.innerWidth <= 768) toggleLibraryDrawer(false);
+    closePopovers();
     $("#resultsSection")?.scrollIntoView({ behavior: "smooth" });
   });
 
@@ -976,7 +980,14 @@ function bind() {
     });
     $(popSel)?.addEventListener("click", e => e.stopPropagation());
   }
-  document.addEventListener("click", () => closePopovers());
+  document.addEventListener("click", e => {
+    closePopovers();
+    if (window.innerWidth <= 768 && !document.body.classList.contains("lib-closed")) {
+      if (!e.target.closest("#libraryDrawer, #btnToggleLib, #btnTopLib, #refQuickMenu, .slot")) {
+        toggleLibraryDrawer(false);
+      }
+    }
+  });
   $("#btnPopSettings")?.addEventListener("click", () => openSettings());
 
   // Toolbar @ button
@@ -1108,12 +1119,17 @@ function bind() {
     }
     const act = e.target.dataset.act;
     const id = e.target.closest(".card")?.dataset.id;
-    if (act === "add") addToTray(id);
+    if (act === "add") {
+      addToTray(id);
+      if (window.innerWidth <= 768) toast("已加入參考 ✨");
+    }
     if (act === "first" || act === "last") {
       const other = act === "first" ? "last" : "first";
       if (state[other] === id) state[other] = null;
       state[act] = id;
       renderSlots();
+      toast(`已設為${act === "first" ? "首幀" : "尾幀"} ✨`);
+      if (window.innerWidth <= 768 && state.pendingSlot === act) toggleLibraryDrawer(false);
     }
     if (act === "del" && confirm("確定要從素材庫刪除這個素材？")) {
       await api("api/library/delete", { id });
@@ -1135,7 +1151,7 @@ function bind() {
       state.pendingSlot = slotEl.dataset.slot;
       if (state.library.some(a => a.kind === "image")) {
         toggleLibraryDrawer(true);
-        toast(`請在左側素材庫點選影像設為${state.pendingSlot === "first" ? "首幀" : "尾幀"}，或雙擊此處直接上傳`);
+        toast(`請在素材庫點選影像設為${state.pendingSlot === "first" ? "首幀" : "尾幀"}，或雙擊此處直接上傳`);
       } else {
         $("#quickSlotInput").click();
       }
@@ -1179,7 +1195,7 @@ function bind() {
     } else if (e.key === "Escape") closeMenu();
   });
   new ResizeObserver(() => ($("#editorBackdrop").style.height = ta.offsetHeight + "px")).observe(ta);
-  $("#mentionMenu").addEventListener("mousedown", e => {
+  $("#mentionMenu").addEventListener("pointerdown", e => {
     const mi = e.target.closest(".mi");
     if (mi) { e.preventDefault(); insertMention(menu.items[+mi.dataset.i].label, menu.start); }
   });
