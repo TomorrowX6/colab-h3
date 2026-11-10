@@ -7,7 +7,7 @@
 |---|---|---|
 | **H3_Basic_ComfyUI** | 基礎學習：裝好 ComfyUI＋H3 模型組，**不帶工作流**，自己拉節點 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Basic_ComfyUI.ipynb) |
 | **H3_Digital_Human** | 數字人：一張人物照＋一段提示詞 → 會說話的影片；也可以交給桌面版 AI 用 skill 生成 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Digital_Human.ipynb) |
-| **H3_Toybox** 🧸 | 可愛的網頁前端：參考生成／頭尾格／純文字／延伸影片＋提示詞改寫與剩餘時間；🖼 **選用的圖片分頁**（P-H3-Image 掛在同一顆 H3 上：文生圖、最多 8 張圖編輯，多約 10 GB）；🤖 短片 Agent（Gemini）。只開網頁，不用碰 ComfyUI 介面（約 50 GB 模型，加生圖約 60 GB） | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Toybox.ipynb) |
+| **H3_Toybox** ✨ | 即夢（Dreamina）風格暗色網頁前端：**AI 影片**（全方位參考／首尾幀／純文字／延伸影片＋提示詞改寫與剩餘時間）、**AI 影像**（選用，P-H3-Image 掛在同一顆 H3 上：文生圖、最多 8 張圖編輯，多約 10 GB）、**AI 代理**（一句話自動規劃多段短片）。支援電腦與手機端響應式介面，不用碰 ComfyUI 節點（約 50 GB 模型，加生圖約 60 GB） | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Toybox.ipynb) |
 
 > 一律從上面的按鈕開啟：筆記本改版只要更新這個 repo，按鈕永遠開到最新版，不必再傳新的分享網址。
 
@@ -92,11 +92,15 @@ ComfyUI 確認正常之後才下載，避免裝壞了還白抓 37 GB。
 
 安裝：把 `skills/h3-colab-digital-human` 整個資料夾放進 AI 的 skills 目錄。官方提示詞指南不隨本 repo 散布，skill 會引導 AI 從 MiniMax 官方 repo 下載（見 `references/H3_NOTICE.md`）。
 
-## H3 Toybox：網頁前端版
+## H3 Toybox：即夢風格網頁前端版
 
 `H3_Toybox.ipynb` 跑 ①②③ 三格就好：ComfyUI 只在背景當引擎，用 Colab 內建代理直接開 H3 Toybox 網頁（程式在 `toybox/`，說明在 [`toybox/README.md`](toybox/README.md)）。
 
-- 下載約 50 GB：上面四個基礎模型＋[dseditor/minimax-h3-studio-assets](https://huggingface.co/dseditor/minimax-h3-studio-assets) 的 LoRA、語意橋、潛空間放大器與 9B 提示詞改寫模型（各檔來源見該頁）。不勾 `INCLUDE_REWRITER` 可省 7 GB，網頁的改寫開關會自動關掉。
+- **即夢（Dreamina）風格暗色介面**：
+  - 頂部三大模式分頁：**AI 影片**（`全方位參考`、`首尾幀`、`純文字`、`🧵 延伸影片`）、**AI 影像**（文生圖與多圖編輯）、**AI 代理**（參考素材＋一句話自動規劃並串接多段短片）。
+  - 沉浸式輸入框卡片：左側傾斜 **「＋ 參考」** 卡片（支援直接上傳本機檔案或開啟可收合的 **素材庫** 抽屜挑選）、`@` 提及自動補全與多色高亮、底部膠囊參數列（`Minimax H3` 模型與快速模式、生成模式、畫面比例與解析度、秒數、動作強度與導演 Skill、`✨ 改寫` 開關與圓形發送鍵 `↑`）。
+  - **手機端響應式體驗**：手機瀏覽器自動轉為底部固定導覽列（`創作`／`素材庫`／`作品`／`設定`）與底部抽屜式面板（Bottom Sheet），觸控直接顯示素材操作按鈕。
+- 下載約 50 GB：上面四個基礎模型＋[dseditor/minimax-h3-studio-assets](https://huggingface.co/dseditor/minimax-h3-studio-assets) 的 LoRA、語意橋、潛空間放大器與 9B 提示詞改寫模型（各檔來源見該頁）。不勾 `INCLUDE_REWRITER` 可省 7 GB；勾選 `INSTALL_IMAGE` 會加載 [PrunaAI/P-H3-Image-Comfy](https://huggingface.co/PrunaAI/P-H3-Image-Comfy)（多約 10 GB，直接掛載於同一顆 H3 模型上）。
 - 節點組：T8 audio（語意橋）、SelfLift（兩段採樣）、H3 Motion Context（延伸影片）。
 - 官方提示詞指南不隨本 repo 散布，② 會從 MiniMax 官方 repo 下載到 `toybox/guides/`。
 - 本機版在 Windows 用 ComfyUI 內嵌 Python 直接跑 `toybox/server.py`；`config.json` 指定 ComfyUI 網址與 input 資料夾。

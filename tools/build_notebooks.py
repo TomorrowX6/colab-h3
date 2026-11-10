@@ -310,9 +310,9 @@ files.download('/content/H3_digital_human.json')
 # ---------------------------------------------------------------- H3 Toybox（網頁前端）
 # ComfyUI 只當背景引擎、不開它的介面；瀏覽器只開 toybox/ 這個前端（Colab 內建代理）。
 TOYBOX = [
-    md("""# H3 Toybox｜Colab 版（可愛的 MiniMax H3 網頁前端）
+    md("""# H3 Toybox｜Colab 版（即夢風格 MiniMax H3 多模態創作工作台）
 
-把想像丟進玩具箱，搖一搖就變成影片 🧸 ComfyUI 只在背景當引擎，**不用開 ComfyUI 介面**，所有操作都在 H3 Toybox 網頁裡。
+沉浸式暗色創作介面 ✨ ComfyUI 只在背景當引擎，**不用開 ComfyUI 介面**，所有操作都在 H3 Toybox 網頁裡（同時支援電腦與手機端瀏覽器）。
 
 由上往下依序執行。**執行階段請選 L4 GPU**（A100 也可以但很耗點數；T4 跑不動）。
 
@@ -324,16 +324,17 @@ TOYBOX = [
 | ③-b | 瀏覽器的 Google 帳號和 Colab 不同時，改用 cloudflare 網址 |
 
 **網頁裡能做的事**
-- 🖼 **圖片**（選用）：文生圖，或拿最多 8 張圖做編輯（換表情、換衣服、換風格、把人放進場景）。用 [P-H3-Image](https://huggingface.co/PrunaAI/P-H3-Image-Comfy) 掛在同一顆 H3 模型上，只多約 10 GB
-- 🤖 **短片 Agent**：一句話規劃成多段短片（要先在 ⚙ 設定填 Gemini 金鑰）
-- 🧸 **參考生成**：圖片 9 張／影片 3 支／聲音 3 段當參考，提示詞裡用 `@圖片1` 標記
-- 🎞 **頭尾格**：只放首格、只放尾格、或兩張都放
-- ✏️ **純文字**：只靠一段描述
-- 🧵 **延伸影片**：參考影片勾「延伸這支影片」，新片段會從它的最後一格接下去，並自動接回原片
-- ✨ **提示詞改寫**：把中文描述擴寫成 H3 規格的英文提示詞（改寫結果預設收起來）。預設用 H3 官方的 9B 改寫模型；也可以在 ⚙ 設定改用 **Gemini** 或 **OpenAI 相容端點**
-- ⚡ **快速模式**（預設開）：8 步出片；關掉是 12 步
-- 📁 **素材庫資料夾**：把圖片、影片、聲音拖進資料夾整理
-- 每支影片都會顯示目前做到哪一步、還要多久
+- 🎬 **AI 影片**（底部膠囊切換三種模式）：
+  - **全方位參考**：影像 9 張／影片 3 支／音訊 3 段當參考，點擊左側「＋ 參考」上傳或從素材庫選取，提示詞裡用 `@圖片1`、`@影片1`、`@音訊1` 標記
+  - **首尾幀**：只放首幀、只放尾幀、或首尾兩張都放
+  - **純文字**：只靠一段文字描述生成影音
+  - **🧵 延伸影片**：參考影片勾選「🧵 延伸」，新片段會從它的最後一格接下去，並自動接回原片
+- 🖼 **AI 影像**（選用）：文生圖，或拿最多 8 張圖做編輯（換表情、換衣服、換風格、把人放進場景）。用 [P-H3-Image](https://huggingface.co/PrunaAI/P-H3-Image-Comfy) 掛在同一顆 H3 模型上，只多約 10 GB
+- 🤖 **AI 代理**：參考素材＋一句話自動規劃成多段分鏡短片並串接合成（要先在 ⚙ 設定填 Gemini 金鑰）
+- ✨ **提示詞改寫**：把簡短描述擴寫成 H3 規格的英文多模態提示詞（可展開「改寫預覽」檢視或微調）。預設用 H3 官方的 9B 改寫模型；也可以在 ⚙ 設定改用 **Gemini** 或 **OpenAI 相容端點**
+- ⚡ **快速模式**（預設開，在左下角 `Minimax H3` 模型選單內）：8 步出片；關掉是 12 步
+- 📁 **可收合素材庫與資料夾**：左側導覽列（手機端為底部導覽列）隨時展開素材庫，支援把影像、影片、音訊拖進資料夾整理
+- 每支作品都會在下方瀑布流即時顯示進度階段與預估剩餘時間
 
 **Hugging Face 權杖（建議）**：左側欄「🔑 密鑰」新增 `HF_TOKEN`（請用**唯讀**權杖），並開啟「筆記本存取權」。
 
@@ -401,7 +402,7 @@ print('✅ 安裝完成')
 USE_DRIVE_CACHE = False  #@param {type:"boolean"}
 #@markdown 不勾就少下載 7 GB：網頁的本地改寫會關掉，可以到 ⚙ 設定改用 Gemini 或 OpenAI 端點改寫。
 INCLUDE_REWRITER = True  #@param {type:"boolean"}
-#@markdown 🖼 加裝生圖（多約 10 GB）：網頁的「圖片」分頁可以文生圖、拿最多 8 張圖做編輯。掛在同一顆 H3 模型上。
+#@markdown 🖼 加裝生圖（多約 10 GB）：網頁的「AI 影像」分頁可以文生圖、拿最多 8 張圖做編輯。掛在同一顆 H3 模型上。
 INSTALL_IMAGE = True  #@param {type:"boolean"}
 from huggingface_hub import hf_hub_download
 import shutil, time
@@ -518,10 +519,10 @@ cfg.update({
     'free_after_rewrite': True,   # Colab 記憶體比較小：改寫完就把 9B 模型卸載
 })
 cfg.pop('guides', None)
-# 🖼 圖片分頁：Colab 用 P-H3-Image（掛在 PRISM 上）；有沒有裝，看檔案是不是真的在
+# 🖼 AI 影像分頁：Colab 用 P-H3-Image（掛在 PRISM 上）；有沒有裝，看檔案是不是真的在
 PH3 = ('loras/p-h3-image_lora_bf16.safetensors', 'text_encoders/p-h3-image_text_encoder_int8_convrot.safetensors',
        'vae/p-h3-image_vae_int8_convrot.safetensors')
-# 🤖 短片 Agent：Colab 上沒有本地大模型，預設改走 Gemini（金鑰在網頁 ⚙ 設定填）
+# 🤖 AI 代理（短片 Agent）：Colab 上沒有本地大模型，預設改走 Gemini（金鑰在網頁 ⚙ 設定填）
 cfg['agent'] = dict(cfg.get('agent') or {}, provider=(cfg.get('agent') or {}).get('provider', 'gemini'))
 cfg['image'] = dict(cfg.get('image') or {}, engine='ph3',
                     installed=all((COMFY / 'models' / f).is_file() for f in PH3))
@@ -534,7 +535,7 @@ toybox = subprocess.Popen([sys.executable, 'server.py'], cwd=str(APP),
 wait_http('http://127.0.0.1:8190/api/config', 'H3 Toybox', '/content/toybox.log', tries=30)
 print('📁 作品存放位置：', DATA)
 from google.colab import output
-output.serve_kernel_port_as_window(8190, anchor_text='🧸 打開 H3 Toybox')
+output.serve_kernel_port_as_window(8190, anchor_text='✨ 打開 H3 Toybox')
 """),
     code("""#@title ③-b（備援）用 cloudflare 網址開 H3 Toybox：瀏覽器登入的 Google 帳號和 Colab 不同時用這格
 # ⚠️ 網址沒有密碼，拿到的人都能用你的 GPU —— 不要貼到公開的地方。
