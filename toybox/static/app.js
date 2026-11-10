@@ -300,16 +300,7 @@ function syncToolbarPills() {
   // 1. Model pill label
   const modelLabel = $("#modelPillLabel");
   if (modelLabel) {
-    if (isImage) {
-      const eng = state.config?.config?.image?.engine === "ph3" ? "P-H3 Image" : "Qwen-Image 2.1";
-      modelLabel.textContent = `Dreamina ${eng}`;
-    } else if (isAgent) {
-      const pl = $("#agentPlanner")?.value === "gemini" ? "Gemini" : "本地 MoE";
-      modelLabel.textContent = `AI 導演 · ${pl}`;
-    } else {
-      const steps = $("#fastMode")?.checked ? "2.5 Turbo" : "2.5 Pro";
-      modelLabel.textContent = `Dreamina H3 ${steps}`;
-    }
+    modelLabel.textContent = "Minimax H3";
   }
 
   // 2. Mode pill (only in video tab)

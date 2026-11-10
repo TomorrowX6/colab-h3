@@ -634,7 +634,6 @@ body:not(.lib-closed) .workspace {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  z-index: 1;
 }
 
 /* Upper section: Left (+參考 or 首尾幀) + Right (Prompt Editor) */
@@ -708,7 +707,7 @@ body:not(.lib-closed) .workspace {
   border-radius: 12px;
   padding: 5px;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
-  z-index: 35;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -980,7 +979,7 @@ mark.m-bad { background: rgba(244, 63, 94, 0.42); }
 /* @ Mention Autocomplete Popup */
 .mention-menu {
   position: absolute;
-  z-index: 40;
+  z-index: 100;
   background: var(--bg-pop);
   border: 1px solid var(--border-light);
   border-radius: 12px;
@@ -1103,7 +1102,7 @@ mark.m-bad { background: rgba(244, 63, 94, 0.42); }
   border-radius: 14px;
   padding: 14px;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.72);
-  z-index: 40;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 12px;
