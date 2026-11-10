@@ -3,222 +3,505 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>H3 Toybox</title>
+<title>Dreamina × H3 Toybox</title>
 <link rel="icon" href="static/img/mascot.png">
 <link rel="stylesheet" href="static/style.css">
 </head>
-<body>
-<header class="topbar">
-  <div class="brand">
-    <img class="brand-mascot" src="static/img/mascot.png" alt="">
-    <h1 class="rainbow"><span>H</span><span>3</span> <span>T</span><span>o</span><span>y</span><span>b</span><span>o</span><span>x</span></h1>
-    <small>把想像丟進玩具箱，搖一搖就變成影片</small>
+<body class="lib-closed">
+
+<!-- 左側即夢風格導覽列 -->
+<aside class="app-rail">
+  <div class="rail-brand" title="Dreamina × MiniMax H3">
+    <div class="brand-prism">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
   </div>
-  <div class="topbar-right">
-    <span id="comfyStatus" class="pill status">連線中…</span>
-    <button id="openSettings" class="pill">⚙ 設定</button>
+
+  <nav class="rail-nav">
+    <button type="button" class="rail-btn active" id="navCreate" title="AI 創作工作台">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 3l1.9 5.8a2 2 0 001.3 1.3L21 12l-5.8 1.9a2 2 0 00-1.3 1.3L12 21l-1.9-5.8a2 2 0 00-1.3-1.3L3 12l5.8-1.9a2 2 0 001.3-1.3L12 3z"/>
+      </svg>
+      <span>創作</span>
+    </button>
+
+    <button type="button" class="rail-btn" id="btnToggleLib" title="開啟／收合素材庫">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      <span>素材庫</span>
+      <i id="libCountBadge" class="rail-badge" hidden>0</i>
+    </button>
+
+    <button type="button" class="rail-btn" id="btnScrollResults" title="查看生成作品與紀錄">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polygon points="23 7 16 12 23 17 23 7"/>
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+      </svg>
+      <span>作品</span>
+      <i id="jobCountBadge" class="rail-badge" hidden>0</i>
+    </button>
+  </nav>
+
+  <div class="rail-bottom">
+    <button type="button" class="rail-btn" id="openSettings" title="系統與模型設定">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+      <span>設定</span>
+    </button>
   </div>
-</header>
+</aside>
 
-<main class="layout">
-  <!-- 素材庫 -->
-  <section class="panel library">
-    <div class="panel-head">
-      <h2><span class="dot pink"></span>素材庫</h2>
-      <div class="head-btns">
-        <button id="btnNewFolder" class="pill small mint" title="建立資料夾，把素材拖進去整理">📁 新資料夾</button>
-        <label class="btn pill small yellow">＋ 上傳<input id="fileInput" type="file" multiple accept="image/*,video/*,audio/*" hidden></label>
+<!-- 可收合素材庫抽屜 -->
+<section class="panel library" id="libraryDrawer">
+  <div class="panel-head">
+    <h2>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      素材庫
+    </h2>
+    <div class="head-btns">
+      <button id="btnNewFolder" class="pill small" title="建立資料夾，把素材拖進去整理">📁 新資料夾</button>
+      <label class="btn pill small accent">＋ 上傳<input id="fileInput" type="file" multiple accept="image/*,video/*,audio/*" hidden></label>
+      <button id="btnCloseLib" class="icon-close" title="收合素材庫">✕</button>
+    </div>
+  </div>
+  <div id="crumbs" class="crumbs"></div>
+  <div class="tabs" id="libTabs">
+    <button data-kind="all" class="active">全部</button>
+    <button data-kind="image">影像</button>
+    <button data-kind="video">影片</button>
+    <button data-kind="audio">音訊</button>
+  </div>
+  <div id="dropZone" class="dropzone">拖曳影像、影片、音訊至此上傳，或點擊上方「＋上傳」</div>
+  <div id="libGrid" class="lib-grid"></div>
+</section>
+
+<!-- 隱藏的快速上傳 input（供 +參考 與 首尾幀 直接上傳並自動掛載） -->
+<input id="quickRefInput" type="file" multiple accept="image/*,video/*,audio/*" hidden>
+<input id="quickSlotInput" type="file" accept="image/*" hidden>
+
+<!-- 主工作區 -->
+<div class="workspace">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-title">Dreamina <small class="brand-badge">H3 Studio</small></span>
+      <span class="brand-sub">全方位多模態 AI 影像與影片創作空間</span>
+    </div>
+    <div class="topbar-right">
+      <button type="button" id="btnTopLib" class="pill small ghost">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+        </svg>
+        素材庫
+      </button>
+      <span id="comfyStatus" class="pill status">連線中…</span>
+    </div>
+  </header>
+
+  <main class="canvas">
+    <!-- Hero 即夢核心創作區 -->
+    <section class="hero-stage">
+      <div class="hero-dots" aria-hidden="true"></div>
+
+      <div class="dreamina-shell">
+        <!-- 頂部即夢分頁列：AI 代理 / AI 影像 / AI 影片 -->
+        <div class="toptabs" id="topTabs">
+          <button data-top="agent" class="top" title="參考圖＋一句話，自動規劃成一支 60 秒內的短片">
+            <svg class="tab-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4z"/>
+              <path d="M16 14h2a4 4 0 014 4v2H2v-2a4 4 0 014-4h2"/>
+            </svg>
+            <span>AI 代理</span>
+          </button>
+          <button data-top="image" class="top">
+            <svg class="tab-ico" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <span>AI 影像</span>
+          </button>
+          <button data-top="video" class="top active">
+            <svg class="tab-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"/>
+              <polygon points="10 8.5 16 12 10 15.5 10 8.5" fill="currentColor" stroke="none"/>
+            </svg>
+            <span>AI 影片</span>
+          </button>
+          <button data-top="projects" class="top proj-tab" hidden title="劇集專案：影片劇・廣播劇・AVG">
+            <span>📁 專案</span>
+          </button>
+        </div>
+
+        <!-- 主輸入框卡片 -->
+        <div class="composer-card panel compose">
+          <!-- 上半部：左側（+參考 或 首尾幀）＋ 右側提示詞編輯器 -->
+          <div class="composer-upper">
+            <!-- 參考素材區（全方位參考 / AI 影像 / AI 代理） -->
+            <div id="refArea" class="ref-area">
+              <div class="ref-deck">
+                <div class="ref-card-wrap">
+                  <button type="button" id="btnAddRef" class="ref-add-card" title="點擊上傳參考內容，或從素材庫選擇">
+                    <svg class="plus-ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    <span class="plus-txt">參考</span>
+                  </button>
+                  <!-- 點擊 +參考 彈出的快速選單 -->
+                  <div id="refQuickMenu" class="quick-menu" hidden>
+                    <button type="button" data-qact="upload">📤 上傳本機檔案</button>
+                    <button type="button" data-qact="library">📁 從素材庫選擇</button>
+                  </div>
+                </div>
+                <div id="tray" class="tray"></div>
+              </div>
+              <span class="hint sr-only" id="refHint">在素材庫按「＋參考」加入，再用 <b>@</b> 標記；影片可以切成「延伸」</span>
+            </div>
+
+            <!-- 首尾幀區（頭尾格模式） -->
+            <div id="framesArea" class="frames-area" hidden>
+              <div class="frame-slots">
+                <div class="slot" data-slot="first" title="點擊設定首幀圖片">
+                  <div class="slot-label">首幀</div>
+                  <div class="slot-body"></div>
+                </div>
+                <div class="slot-arrow">➜</div>
+                <div class="slot" data-slot="last" title="點擊設定尾幀圖片">
+                  <div class="slot-label">尾幀</div>
+                  <div class="slot-body"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 提示詞輸入與 @ 高亮區 -->
+            <div class="editor-wrap">
+              <div id="editorPlaceholder" class="editor-placeholder" aria-hidden="true">
+                上傳最多 9 個參考內容 (包含影像、影片和音訊)，或使用 <span class="at-badge">@</span> 提及元素
+              </div>
+              <div id="editorBackdrop" class="editor-backdrop" aria-hidden="true"></div>
+              <textarea id="prompt" class="editor" spellcheck="false"></textarea>
+              <div id="mentionMenu" class="mention-menu" hidden></div>
+            </div>
+          </div>
+
+          <!-- 下半部：即夢風格參數工具列 -->
+          <div class="composer-toolbar">
+            <div class="toolbar-left">
+              <!-- 1. 模型膠囊 -->
+              <div class="pop-wrap">
+                <button type="button" class="tool-pill" id="pillModel">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9">
+                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                  </svg>
+                  <span id="modelPillLabel">Dreamina H3 2.5</span>
+                  <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="popover" id="popModel" hidden>
+                  <div class="pop-title">生成引擎與加速</div>
+                  <div class="opt" data-only="video">
+                    <label>採樣速度</label>
+                    <label class="switch"><input id="fastMode" type="checkbox" checked><span></span> ⚡ 快速模式 <small class="hint" id="fastHint">8 步</small></label>
+                  </div>
+                  <div class="opt" data-only="agent">
+                    <label>短片規劃模型</label>
+                    <select id="agentPlanner">
+                      <option value="gemini">💎 Gemini</option>
+                      <option value="openai">🧠 本地 MoE（OpenAI 相容端點）</option>
+                    </select>
+                  </div>
+                  <div class="pop-foot">
+                    <button type="button" class="pill small ghost" id="btnPopSettings">⚙ 提示詞改寫與 LoRA 設定…</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. 模式切換膠囊（全方位參考 / 首尾幀 / 純文字） -->
+              <div class="pop-wrap" id="wrapModePill">
+                <button type="button" class="tool-pill" id="pillMode">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9">
+                    <path d="M12 2L14.5 9.5 22 12 14.5 14.5 12 22 9.5 14.5 2 12 9.5 9.5 12 2z"/>
+                  </svg>
+                  <span id="modePillLabel">全方位參考</span>
+                  <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="popover" id="popMode" hidden>
+                  <div class="pop-title">影片生成模式</div>
+                  <div class="modes" id="modeTabs">
+                    <button type="button" data-mode="ref" class="mode active">
+                      <b>全方位參考</b>
+                      <small>影像・影片・音訊參考／延伸影片</small>
+                    </button>
+                    <button type="button" data-mode="frames" class="mode">
+                      <b>首尾幀</b>
+                      <small>指定第一格、最後一格畫面</small>
+                    </button>
+                    <button type="button" data-mode="text" class="mode">
+                      <b>純文字</b>
+                      <small>只靠文字描述生成影音</small>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. 比例與解析度膠囊（9:16 · 720P） -->
+              <div class="pop-wrap" id="wrapRatioPill">
+                <button type="button" class="tool-pill" id="pillRatio">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2"/>
+                  </svg>
+                  <span id="ratioPillLabel">自動 · 720P</span>
+                </button>
+                <div class="popover pop-wide" id="popRatio" hidden>
+                  <div class="opt">
+                    <label>畫面比例</label>
+                    <div class="seg" id="aspectSeg"></div>
+                  </div>
+                  <div class="opt" data-only="video agent">
+                    <label>解析度</label>
+                    <div class="seg" id="resSeg">
+                      <button type="button" data-v="480P">480P</button>
+                      <button type="button" data-v="720P" class="active">720P</button>
+                      <button type="button" data-v="1080P">1080P</button>
+                    </div>
+                  </div>
+                  <div class="opt" data-only="image">
+                    <label>影像尺寸（長邊）</label>
+                    <div class="seg" id="imgSizeSeg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. 秒數膠囊（10s / 30s） -->
+              <div class="pop-wrap" id="wrapDurationPill">
+                <button type="button" class="tool-pill" id="pillDuration">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"/>
+                    <polyline points="12 7 12 12 15 15"/>
+                  </svg>
+                  <span id="durationPillLabel">10s</span>
+                </button>
+                <div class="popover" id="popDuration" hidden>
+                  <div class="opt" data-only="video">
+                    <label>影片秒數 <b id="secondsVal">10</b>s <span id="extendNote" class="hint" hidden>（前 0.9s 為接縫將自動裁剪）</span></label>
+                    <input id="seconds" type="range" min="3" max="15" step="1" value="10">
+                    <div class="preset-row" id="secPresets">
+                      <button type="button" data-sec="4">4s</button>
+                      <button type="button" data-sec="5">5s</button>
+                      <button type="button" data-sec="8">8s</button>
+                      <button type="button" data-sec="10">10s</button>
+                      <button type="button" data-sec="12">12s</button>
+                      <button type="button" data-sec="15">15s</button>
+                    </div>
+                  </div>
+                  <div class="opt" data-only="agent">
+                    <label>短片總長度 <b id="agentSecondsVal">30</b>s</label>
+                    <input id="agentSeconds" type="range" min="10" max="60" step="5" value="30">
+                    <div class="preset-row" id="agentSecPresets">
+                      <button type="button" data-asec="15">15s</button>
+                      <button type="button" data-asec="30">30s</button>
+                      <button type="button" data-asec="45">45s</button>
+                      <button type="button" data-asec="60">60s</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. @ 提及元素按鈕 -->
+              <button type="button" class="tool-pill tool-icon-only" id="btnToolbarAt" title="在提示詞插入 @ 提及參考素材">@</button>
+
+              <!-- 6. 導演與運鏡參數膠囊（動作強度 / 導演 Skill / Seed） -->
+              <div class="pop-wrap" id="wrapDirectorPill">
+                <button type="button" class="tool-pill" id="pillDirector" title="動作強度、導演運鏡 Skill 與隨機種子">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+                    <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+                    <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+                  </svg>
+                  <span id="directorPillLabel">文戲</span>
+                </button>
+                <div class="popover pop-wide" id="popDirector" hidden>
+                  <div class="opt" data-only="video agent">
+                    <label>動作強度 <span class="tip" title="關：只套用文戲 LoRA；開啟：套用全部 LoRA，動作 LoRA 強度依等級縮放">?</span></label>
+                    <div class="seg" id="intensitySeg">
+                      <button type="button" data-v="off" class="active">關（文戲）</button>
+                      <button type="button" data-v="low">低</button>
+                      <button type="button" data-v="mid">中</button>
+                      <button type="button" data-v="high">高</button>
+                    </div>
+                  </div>
+                  <div class="opt" data-only="video">
+                    <label>導演 Skill</label>
+                    <select id="skill"><option value="">不使用</option></select>
+                  </div>
+                  <div class="opt" data-only="video image">
+                    <label>Seed（空白＝隨機）</label>
+                    <input id="seed" type="number" placeholder="隨機">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右側：提示詞改寫開關＋圓形發送鍵 ↑ -->
+            <div class="toolbar-right">
+              <div class="rewrite-inline" id="rewriteRow">
+                <label class="switch compact" title="自動將簡短描述擴寫為 H3 官方多模態提示詞">
+                  <input id="useRewrite" type="checkbox" checked>
+                  <span></span>
+                  <small>✨ 改寫</small>
+                </label>
+                <button type="button" id="btnRewrite" class="tool-pill ghost-pill" title="預覽或手動編輯改寫後的提示詞">改寫預覽</button>
+                <button type="button" id="btnGenerate" class="submit-circle" title="開始生成">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"/>
+                    <polyline points="5 12 12 5 19 12"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="rewrite-inline" id="agentRow" hidden>
+                <span class="hint">自動規劃多段分鏡並串接成完整短片</span>
+                <button type="button" id="btnAgent" class="submit-circle" title="開始製作短片">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"/>
+                    <polyline points="5 12 12 5 19 12"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="rewrite-inline" id="projRow" hidden>
+                <span class="hint">輸入想法建立新作品，或點選下方專案</span>
+                <button type="button" id="btnNewProject" class="submit-circle" title="開一部新作品">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"/>
+                    <polyline points="5 12 12 5 19 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 隱藏的相容 options 容器（確保舊有 querySelector(".options") 邏輯相容） -->
+          <div class="options" hidden></div>
+        </div>
+
+        <!-- 改寫進度與改寫後提示詞檢視器 -->
+        <div id="rewriteProgress" class="mini-progress" hidden>
+          <div class="bar"><i></i></div>
+          <span></span>
+        </div>
+
+        <details id="rewriteBox" class="rewrite-box" hidden>
+          <summary>
+            <span>✨ 改寫後的提示詞 <small id="rewriteMeta"></small></span>
+            <span id="rewriteStale" class="badge warn" hidden>內容已變更，生成時將重新改寫</span>
+            <span class="open-hint">展開檢視・微調</span>
+          </summary>
+          <textarea id="rewriteText" spellcheck="false"></textarea>
+        </details>
+
+        <!-- 專案面板 -->
+        <div id="projPane" hidden>
+          <div class="proj-grid" id="projGrid"></div>
+        </div>
+
+        <!-- 短片 Agent 分鏡與執行面板 -->
+        <div id="agentPanel" class="agent-panel" hidden></div>
       </div>
-    </div>
-    <div id="crumbs" class="crumbs"></div>
-    <div class="tabs" id="libTabs">
-      <button data-kind="all" class="active">全部</button>
-      <button data-kind="image">圖片</button>
-      <button data-kind="video">影片</button>
-      <button data-kind="audio">音訊</button>
-    </div>
-    <div id="dropZone" class="dropzone">把圖片、影片、音訊拖進來 🧸</div>
-    <div id="libGrid" class="lib-grid"></div>
-  </section>
+    </section>
 
-  <!-- 創作區 -->
-  <section class="panel compose">
-    <div class="toptabs" id="topTabs">
-      <button data-top="image" class="top">🖼 圖片</button>
-      <button data-top="video" class="top active">🎬 影片</button>
-      <button data-top="agent" class="top" title="參考圖＋一句話，自動規劃成一支 60 秒內的短片">🤖 短片 Agent</button>
-      <button data-top="projects" class="top proj-tab" hidden title="劇集專案：影片劇・廣播劇・AVG">📁 專案</button>
-    </div>
-
-    <div class="modes" id="modeTabs">
-      <button data-mode="ref" class="mode pink active"><b>🧸 參考生成</b><small>圖片・影片・聲音當參考</small></button>
-      <button data-mode="frames" class="mode blue"><b>🎞 頭尾格</b><small>指定第一格、最後一格</small></button>
-      <button data-mode="text" class="mode yellow"><b>✏️ 純文字</b><small>只靠一段描述</small></button>
-    </div>
-
-    <div id="refArea">
-      <div class="area-head"><span>參考素材</span><span class="hint" id="refHint">在素材庫按「＋參考」加入，再用 <b>@</b> 標記；影片可以切成「延伸」</span></div>
-      <div id="tray" class="tray"></div>
-    </div>
-
-    <div id="framesArea" hidden>
-      <div class="area-head"><span>頭尾格</span><span class="hint">只放首格＝往後發展；只放尾格＝倒推到這一格；兩張都放＝從頭走到尾</span></div>
-      <div class="frame-slots">
-        <div class="slot" data-slot="first"><div class="slot-label">🎬 首格</div><div class="slot-body"></div></div>
-        <div class="slot-arrow">➜</div>
-        <div class="slot" data-slot="last"><div class="slot-label">🏁 尾格</div><div class="slot-body"></div></div>
-      </div>
-    </div>
-
-    <div class="editor-wrap">
-      <div id="editorBackdrop" class="editor-backdrop" aria-hidden="true"></div>
-      <textarea id="prompt" class="editor" spellcheck="false"></textarea>
-      <div id="mentionMenu" class="mention-menu" hidden></div>
-    </div>
-
-    <div class="options">
-      <div class="opt">
-        <label>畫面比例</label>
-        <div class="seg" id="aspectSeg"></div>
-      </div>
-      <div class="opt" data-only="image">
-        <label>圖片尺寸（長邊）</label>
-        <div class="seg" id="imgSizeSeg"></div>
-      </div>
-      <div class="opt" data-only="agent">
-        <label>短片長度 <b id="agentSecondsVal">30</b> 秒</label>
-        <input id="agentSeconds" type="range" min="10" max="60" step="5" value="30">
-      </div>
-      <div class="opt" data-only="agent">
-        <label>規劃模型</label>
-        <select id="agentPlanner"><option value="openai">🧠 本地 MoE（OpenAI 相容端點）</option><option value="gemini">💎 Gemini</option></select>
-      </div>
-      <div class="opt" data-only="video agent">
-        <label>解析度</label>
-        <div class="seg" id="resSeg">
-          <button data-v="480P">480P</button><button data-v="720P" class="active">720P</button><button data-v="1080P">1080P</button>
+    <!-- 下方作品瀑布流 / 時間軸 -->
+    <section class="panel results" id="resultsSection">
+      <div class="results-head">
+        <div class="results-title">
+          <h2>生成作品</h2>
+          <span class="hint">即時顯示進度、預估剩餘時間與歷史生成紀錄</span>
+        </div>
+        <div class="results-filter" id="jobFilterTabs">
+          <button type="button" data-jf="all" class="active">全部</button>
+          <button type="button" data-jf="video">影片</button>
+          <button type="button" data-jf="image">影像</button>
         </div>
       </div>
-      <div class="opt" data-only="video">
-        <label>秒數 <b id="secondsVal">10</b> 秒 <span id="extendNote" class="hint" hidden>（前 0.9 秒是接縫，會被剪掉）</span></label>
-        <input id="seconds" type="range" min="3" max="15" step="1" value="10">
-      </div>
-      <div class="opt" data-only="video agent">
-        <label>動作強度 <span class="tip" title="關：只套用文戲 LoRA；開啟：套用全部 LoRA，動作 LoRA 強度依等級縮放">?</span></label>
-        <div class="seg" id="intensitySeg">
-          <button data-v="off" class="active">關（文戲）</button><button data-v="low">低</button><button data-v="mid">中</button><button data-v="high">高</button>
-        </div>
-      </div>
-      <div class="opt" data-only="video">
-        <label>導演 Skill</label>
-        <select id="skill"><option value="">不使用</option></select>
-      </div>
-      <div class="opt" data-only="video">
-        <label>速度</label>
-        <label class="switch"><input id="fastMode" type="checkbox" checked><span></span> ⚡ 快速模式 <small class="hint" id="fastHint">8 步</small></label>
-      </div>
-      <div class="opt" data-only="video image">
-        <label>Seed（空白＝隨機）</label>
-        <input id="seed" type="number" placeholder="隨機">
-      </div>
-    </div>
+      <div id="jobList" class="job-list"></div>
+    </section>
+  </main>
+</div>
 
-    <div id="projPane" hidden>
-      <div class="proj-grid" id="projGrid"></div>
-    </div>
-    <div class="rewrite-row" id="projRow" hidden>
-      <span class="hint">上面寫一句想法（或貼大綱）就能開新作品；點方塊繼續做已有的作品</span>
-      <div class="actions"><button id="btnNewProject" class="pill big pink">🎬 開一部新作品</button></div>
-    </div>
-    <div class="rewrite-row" id="agentRow" hidden>
-      <span class="hint">一次規劃整支短片 → 逐段生成並自動接起來；做好之後可以在下面用一句話修改</span>
-      <div class="actions"><button id="btnAgent" class="pill big blue">🤖 開始做短片</button></div>
-    </div>
-    <div id="agentPanel" class="agent-panel" hidden></div>
-
-    <div class="rewrite-row" id="rewriteRow">
-      <label class="switch"><input id="useRewrite" type="checkbox" checked><span></span> ✨ 提示詞改寫</label>
-      <div class="actions">
-        <button id="btnRewrite" class="pill">改寫預覽</button>
-        <button id="btnGenerate" class="pill big blue">🎬 生成影片</button>
-      </div>
-    </div>
-    <div id="rewriteProgress" class="mini-progress" hidden><div class="bar"><i></i></div><span></span></div>
-
-    <details id="rewriteBox" class="rewrite-box" hidden>
-      <summary>
-        <span>✨ 改寫後的提示詞 <small id="rewriteMeta"></small></span>
-        <span id="rewriteStale" class="badge warn" hidden>內容改過了，生成時會重新改寫</span>
-        <span class="open-hint">點開查看・修改</span>
-      </summary>
-      <textarea id="rewriteText" spellcheck="false"></textarea>
-    </details>
-  </section>
-
-  <!-- 結果 -->
-  <section class="panel results">
-    <div class="panel-head"><h2><span class="dot blue"></span>生成結果</h2></div>
-    <div id="jobList" class="job-list"></div>
-  </section>
-</main>
-
-<!-- 設定 -->
+<!-- 設定對話框 -->
 <dialog id="settings">
   <form method="dialog" class="settings-form">
-    <div class="settings-head"><h2>⚙ 設定</h2><button value="cancel" class="pill small" title="關閉">✕</button></div>
+    <div class="settings-head">
+      <h2>⚙ 系統與模型設定</h2>
+      <button value="cancel" class="icon-close" title="關閉">✕</button>
+    </div>
     <div class="settings-body">
       <fieldset>
-        <legend>✨ 提示詞改寫</legend>
+        <legend>✨ 提示詞改寫引擎</legend>
         <div class="providers" id="cfgProvider">
-          <label class="prov"><input type="radio" name="provider" value="local"><span><b>🧸 本地小模型</b><small>H3 官方 9B 改寫模型，在 ComfyUI 裡跑，不用金鑰</small></span></label>
-          <label class="prov"><input type="radio" name="provider" value="gemini"><span><b>💎 Gemini</b><small>Google Gemini API，需要金鑰</small></span></label>
+          <label class="prov"><input type="radio" name="provider" value="local"><span><b>🧸 本地 9B 模型</b><small>H3 官方改寫模型，在 ComfyUI 執行，免金鑰</small></span></label>
+          <label class="prov"><input type="radio" name="provider" value="gemini"><span><b>💎 Google Gemini</b><small>Gemini API 雲端改寫，支援生圖與短片規劃</small></span></label>
           <label class="prov"><input type="radio" name="provider" value="openai"><span><b>🔌 OpenAI 相容端點</b><small>OpenAI、OpenRouter、LM Studio、vLLM…</small></span></label>
         </div>
 
         <div class="prov-panel" data-panel="local">
-          <label>模型 <select id="cfgModel"></select></label>
+          <label>模型檔案 <select id="cfgModel"></select></label>
           <div class="grid2">
             <label>MTP 推測解碼
               <select id="cfgMtp"><option>auto</option><option>off</option><option>2</option><option>3</option><option>4</option></select>
             </label>
-            <label>最大長度 <input id="cfgMaxLen" type="number" min="512" step="512"></label>
+            <label>最大生成長度 <input id="cfgMaxLen" type="number" min="512" step="512"></label>
           </div>
-          <label class="switch"><input id="cfgThinking" type="checkbox"><span></span> 思考模式（較慢、較周全）</label>
+          <label class="switch"><input id="cfgThinking" type="checkbox"><span></span> 思考模式（較慢、細節更周全）</label>
         </div>
 
         <div class="prov-panel" data-panel="gemini">
           <label>API 金鑰 <span class="key-row"><input id="cfgGemKey" type="password" autocomplete="off"><button type="button" class="pill small" data-clear-key="gemini">清除</button></span></label>
-          <label>模型（可從清單選，也可以自己輸入）<input id="cfgGemModel" type="text" list="gemModels"></label>
+          <label>模型名稱（可選單挑選或自行輸入）<input id="cfgGemModel" type="text" list="gemModels"></label>
           <datalist id="gemModels"></datalist>
-          <div class="verify"><button type="button" class="pill small blue" data-verify="gemini">🔍 驗證</button><span class="vres" id="gemResult"></span></div>
+          <div class="verify"><button type="button" class="pill small accent" data-verify="gemini">🔍 驗證連線</button><span class="vres" id="gemResult"></span></div>
         </div>
 
         <div class="prov-panel" data-panel="openai">
-          <label>端點網址 <input id="cfgOaUrl" type="text" placeholder="例：https://api.openai.com/v1　或　http://127.0.0.1:1234/v1"></label>
+          <label>端點網址 <input id="cfgOaUrl" type="text" placeholder="例：https://api.openai.com/v1 或 http://127.0.0.1:1234/v1"></label>
           <label>API 金鑰（本機伺服器可留空）<span class="key-row"><input id="cfgOaKey" type="password" autocomplete="off"><button type="button" class="pill small" data-clear-key="openai">清除</button></span></label>
-          <label>模型 <input id="cfgOaModel" type="text" list="oaModels" placeholder="例：gpt-5-mini"></label>
+          <label>模型名稱 <input id="cfgOaModel" type="text" list="oaModels" placeholder="例：gpt-5-mini"></label>
           <datalist id="oaModels"></datalist>
-          <div class="verify"><button type="button" class="pill small blue" data-verify="openai">🔍 驗證</button><span class="vres" id="oaResult"></span></div>
+          <div class="verify"><button type="button" class="pill small accent" data-verify="openai">🔍 驗證連線</button><span class="vres" id="oaResult"></span></div>
         </div>
 
         <div class="grid3">
-          <label>溫度 <input id="cfgTemp" type="number" min="0.05" max="2" step="0.05"></label>
-          <label>top_p <input id="cfgTopP" type="number" min="0.05" max="1" step="0.05"></label>
-          <label>參考圖邊長 <input id="cfgSide" type="number" min="256" max="2048" step="64"></label>
+          <label>溫度 (Temperature) <input id="cfgTemp" type="number" min="0.05" max="2" step="0.05"></label>
+          <label>Top P <input id="cfgTopP" type="number" min="0.05" max="1" step="0.05"></label>
+          <label>參考圖分析邊長 <input id="cfgSide" type="number" min="256" max="2048" step="64"></label>
         </div>
       </fieldset>
+
       <fieldset>
-        <legend>🎛 LoRA 分組（關閉動作強度時只套用「文戲」）</legend>
+        <legend>🎛 LoRA 權重分組（關閉動作強度時僅套用「文戲」）</legend>
         <div id="cfgLoras"></div>
       </fieldset>
+
       <fieldset>
-        <legend>🔗 連線</legend>
-        <label>ComfyUI 網址 <input id="cfgUrl" type="text"></label>
+        <legend>🔗 後端連線</legend>
+        <label>ComfyUI 伺服器網址 <input id="cfgUrl" type="text"></label>
       </fieldset>
     </div>
     <div class="dialog-actions">
       <button value="cancel" class="pill">取消</button>
-      <button id="saveSettings" value="save" class="pill blue">儲存</button>
+      <button id="saveSettings" value="save" class="pill accent">儲存設定</button>
     </div>
   </form>
 </dialog>

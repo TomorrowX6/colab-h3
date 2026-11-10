@@ -5,9 +5,9 @@
 
 | 筆記本 | 用途 | 開啟 |
 |---|---|---|
-| **H3_Basic_ComfyUI** | 基礎學習：裝好 ComfyUI＋H3 模型組，**不帶工作流**，自己拉節點 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dseditor/minimax-h3-colab/blob/main/H3_Basic_ComfyUI.ipynb) |
-| **H3_Digital_Human** | 數字人：一張人物照＋一段提示詞 → 會說話的影片；也可以交給桌面版 AI 用 skill 生成 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dseditor/minimax-h3-colab/blob/main/H3_Digital_Human.ipynb) |
-| **H3_Toybox** 🧸 | 可愛的網頁前端：參考生成／頭尾格／純文字／延伸影片＋提示詞改寫與剩餘時間；🖼 **選用的圖片分頁**（P-H3-Image 掛在同一顆 H3 上：文生圖、最多 8 張圖編輯，多約 10 GB）；🤖 短片 Agent（Gemini）。只開網頁，不用碰 ComfyUI 介面（約 50 GB 模型，加生圖約 60 GB） | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dseditor/minimax-h3-colab/blob/main/H3_Toybox.ipynb) |
+| **H3_Basic_ComfyUI** | 基礎學習：裝好 ComfyUI＋H3 模型組，**不帶工作流**，自己拉節點 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Basic_ComfyUI.ipynb) |
+| **H3_Digital_Human** | 數字人：一張人物照＋一段提示詞 → 會說話的影片；也可以交給桌面版 AI 用 skill 生成 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Digital_Human.ipynb) |
+| **H3_Toybox** 🧸 | 可愛的網頁前端：參考生成／頭尾格／純文字／延伸影片＋提示詞改寫與剩餘時間；🖼 **選用的圖片分頁**（P-H3-Image 掛在同一顆 H3 上：文生圖、最多 8 張圖編輯，多約 10 GB）；🤖 短片 Agent（Gemini）。只開網頁，不用碰 ComfyUI 介面（約 50 GB 模型，加生圖約 60 GB） | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/TomorrowX6/colab-h3/blob/main/H3_Toybox.ipynb) |
 
 > 一律從上面的按鈕開啟：筆記本改版只要更新這個 repo，按鈕永遠開到最新版，不必再傳新的分享網址。
 
@@ -34,7 +34,7 @@
 
 ### 1. 開啟筆記本
 
-點上方表格的 **Open in Colab**。也可以在 Colab 首頁按「開啟筆記本 → GitHub」，搜尋 `dseditor/minimax-h3-colab`。
+點上方表格的 **Open in Colab**。也可以在 Colab 首頁按「開啟筆記本 → GitHub」，搜尋 `TomorrowX6/colab-h3`。
 
 ![Colab 首頁](docs/images/01_colab_home.png)
 ![從 GitHub 開啟](docs/images/02_open_from_github.png)

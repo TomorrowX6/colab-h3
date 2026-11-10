@@ -32,7 +32,10 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-import av
+try:
+    import av
+except ImportError:
+    av = None
 from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parent

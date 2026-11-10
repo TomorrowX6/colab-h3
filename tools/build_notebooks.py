@@ -46,7 +46,7 @@ cells = [
 
 模型：`Minimax-h3_Singularity_x_10Eros-Max_PRISM`（int8，加速已融合，6 步）＋官方 Qwen3-VL 文字編碼器與 VAE。授權依照各來源模型。
 
-最新版：<https://github.com/dseditor/minimax-h3-colab>"""),
+最新版：<https://github.com/TomorrowX6/colab-h3>"""),
     code("#@title ① 檢查環境＋安裝 ComfyUI（GPU 或驅動不符就停下，不會安裝）\nFIX_SRC = " + repr(fix_src) + """
 import torch, shutil, subprocess, sys, os
 from pathlib import Path
@@ -290,7 +290,7 @@ HEAD_BASIC = md("""# MiniMax H3｜ComfyUI 基礎版（Colab）
 
 模型：`Minimax-h3_Singularity_x_10Eros-Max_PRISM`（int8，加速已融合，6 步）＋官方 Qwen3-VL 文字編碼器與 VAE。授權依照各來源模型。
 
-最新版：<https://github.com/dseditor/minimax-h3-colab>""")
+最新版：<https://github.com/TomorrowX6/colab-h3>""")
 
 C2_BASIC = without(cells[2],
     '＋把 H3 數字人工作流放進清單\nUI_WORKFLOW = ' + repr(ui_wf),
@@ -339,7 +339,7 @@ TOYBOX = [
 
 模型：`Minimax-h3_Singularity_x_10Eros-Max_PRISM`（int8）＋官方 Qwen3-VL 文字編碼器與 VAE；LoRA、語意橋、潛空間放大器與改寫模型鏡像在 [dseditor/minimax-h3-studio-assets](https://huggingface.co/dseditor/minimax-h3-studio-assets)（各檔來源見該頁）。授權依照各來源模型。
 
-最新版：<https://github.com/dseditor/minimax-h3-colab>"""),
+最新版：<https://github.com/TomorrowX6/colab-h3>"""),
     code("""#@title ① 檢查環境＋安裝 ComfyUI、節點與 H3 Toybox（GPU 或驅動不符就停下，不會安裝）
 import torch, shutil, subprocess, sys, os
 from pathlib import Path
@@ -386,7 +386,7 @@ for name, url in NODES.items():
 # 導演 Skill 只是文字檔：放在 custom_nodes 外面，不載入它的節點
 clone('https://github.com/T8mars/comfyui-minimax-h3-prompt-enhancer-T8', '/content/t8-enhancer')
 # H3 Toybox 本體
-clone('https://github.com/dseditor/minimax-h3-colab.git', '/content/minimax-h3-colab')
+clone('https://github.com/TomorrowX6/colab-h3.git', '/content/minimax-h3-colab')
 APP = Path('/content/minimax-h3-colab/toybox')
 print('ffmpeg:', shutil.which('ffmpeg') or '沒有（延伸影片會失敗）')
 out = subprocess.run([sys.executable, '-c', 'import torch;print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'],
