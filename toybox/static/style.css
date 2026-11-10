@@ -1,4 +1,5 @@
 :root {
+  color-scheme: dark;
   --bg-root: #090b0e;
   --bg-rail: #0d1014;
   --bg-drawer: #12161b;
@@ -26,6 +27,42 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+
+/* Custom sleek dark scrollbars (Dreamina style) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 229, 255, 0.5);
+}
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+  background: transparent;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+}
 
 html, body {
   margin: 0;
@@ -936,12 +973,14 @@ body:not(.lib-closed) .workspace {
 .editor, .editor-backdrop {
   width: 100%;
   min-height: 100px;
-  padding: 4px;
+  max-height: 220px;
+  padding: 4px 10px 4px 4px;
   border-radius: 8px;
   font: 15px/1.65 var(--font);
   white-space: pre-wrap;
   word-wrap: break-word;
   letter-spacing: 0;
+  overflow-y: auto;
 }
 
 .editor {
@@ -963,8 +1002,10 @@ body:not(.lib-closed) .workspace {
   color: transparent;
   background: transparent;
   border: none;
-  overflow: hidden;
   pointer-events: none;
+}
+.editor-backdrop::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .editor-backdrop mark {
   color: transparent;
@@ -1394,6 +1435,7 @@ mark.m-bad { background: rgba(244, 63, 94, 0.42); }
   font: 12.5px/1.6 "JetBrains Mono", Consolas, monospace;
   background: #0f1217;
   color: var(--text-main);
+  outline: none;
 }
 
 .badge {
